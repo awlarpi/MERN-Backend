@@ -1,24 +1,26 @@
-import { Request, Response } from "express"
+import { Request, Response, NextFunction } from "express"
+import bcrypt from "bcrypt"
 import User from "../models/userModel"
 
-// login user
-export async function loginUser(req: Request, res: Response) {
-    const { email, password } = req.body
-    try {
-        const user = await User.login(email, password)
-        res.status(200).json(user)
-    } catch (error: any) {
-        res.status(400).json({ error: error.message })
-    }
+// signup user
+export async function createNewUser(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  const { email, password } = req.body
+
+  const hash = await bcrypt.hash(password, 10).catch(next)
+  const user = await User.create({ email, password: hash }).catch(next)
+
+  res.status(200).json(user)
 }
 
-// signup user
-export async function signupUser(req: Request, res: Response) {
-    const { email, password } = req.body
-    try {
-        const user = await User.signup(email, password)
-        res.status(200).json(user)
-    } catch (err: any) {
-        res.status(400).json({ error: err.message })
-    }
+// login user
+export async function returnUserData(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  res.status(200).json("Login successful")
 }

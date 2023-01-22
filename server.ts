@@ -1,39 +1,36 @@
 import dotenv from "dotenv"
-import { set, connect } from "mongoose"
-import workoutRoutes from "./routes/workoutRoutes"
-import userRoutes from "./routes/userRoutes"
 import express from "express"
 import cors from "cors"
+import { set, connect } from "mongoose"
+import morgan from "morgan"
 
-const app = express()
-
-const corsOptions = {
-    origin: "*",
-    optionsSuccessStatus: 200,
-}
+import workoutRoutes from "./routes/workoutRoutes"
+import userRoutes from "./routes/userRoutes"
+import * as middleware from "./lib/errorMiddleware"
 
 dotenv.config()
+set("strictQuery", false)
 
-//parse all json data
+const app = express()
+const corsOptions = { origin: "*" }
+
+// middleware
+app.use(morgan("dev"))
 app.use(express.json())
 
-//middleware
-app.use((req, res, next) => {
-    console.log(req.path, req.method)
-    next()
-})
-
-//routes
+// routes
 app.use("/api/workouts", cors(corsOptions), workoutRoutes)
 app.use("/api/user", cors(corsOptions), userRoutes)
 
-set("strictQuery", false)
+// error handlers
+app.use(middleware.errorLogger)
+app.use(middleware.errorResponder)
+app.use(middleware.failSafeHandler)
 
 connect(process.env.MONGO_URI!)
-    .then(() => {
-        //listen for requests
-        app.listen(process.env.PORT, () => {
-            console.log("connected to db and listening on port 4000")
-        })
+  .then(() => {
+    app.listen(process.env.PORT, () => {
+      console.log("Server started successfully! Listening on port 4000...")
     })
-    .catch(() => console.error("Failed to connect to database"))
+  })
+  .catch(() => console.error("Failed to connect to database"))
