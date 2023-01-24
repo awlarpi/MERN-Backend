@@ -20,10 +20,8 @@ export const workoutSchema: Schema = {
       negated: true,
       errorMessage: "title is missing",
     },
-    contains: {
-      negated: true,
-      errorMessage: 'title must not contain "?"',
-      options: ["?"],
+    isString: {
+      errorMessage: "title must be a string",
     },
     trim: true,
   },

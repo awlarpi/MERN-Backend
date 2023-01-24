@@ -35,6 +35,5 @@ export function failSafeHandler(
   res: Response,
   next: NextFunction
 ) {
-  //res.status(400).json({ error: "bad request" })
-  res.status(400).json({ error: error.message })
+  res.status(400).json({ error: "bad request" })
 }
