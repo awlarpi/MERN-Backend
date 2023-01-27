@@ -3,24 +3,24 @@ import { Types } from "mongoose"
 import jwt from "jsonwebtoken"
 
 export function createToken(_id: Types.ObjectId) {
-  return jwt.sign({ _id }, process.env.TOKEN_SECRET!, { expiresIn: "3d" })
+    return jwt.sign({ _id }, process.env.TOKEN_SECRET!, { expiresIn: "3d" })
 }
 
 export function authenticateToken(
-  req: Request,
-  res: Response,
-  next: NextFunction
+    req: Request,
+    res: Response,
+    next: NextFunction
 ) {
-  const authHeader = req.headers["authorization"]
-  const token = authHeader && authHeader.split(" ")[1]
+    const authHeader = req.headers["authorization"]
+    const token = authHeader && authHeader.split(" ")[1]
 
-  if (!token) return res.status(401).json({ error: "user not logged in" })
+    if (!token) return res.status(401).json({ error: "user not logged in" })
 
-  try {
-    const decoded: any = jwt.verify(token, process.env.TOKEN_SECRET!)
-    res.locals._id = decoded._id
-    next()
-  } catch (err) {
-    res.status(401).json({ error: "invalid token" })
-  }
+    try {
+        const decoded: any = jwt.verify(token, process.env.TOKEN_SECRET!)
+        res.locals._id = decoded._id
+        next()
+    } catch (err) {
+        res.status(401).json({ error: "invalid token" })
+    }
 }

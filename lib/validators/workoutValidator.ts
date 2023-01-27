@@ -1,52 +1,36 @@
 import { Schema } from "express-validator"
 
 export const workoutidSchema: Schema = {
-  id: {
-    in: "params",
-    isEmpty: {
-      negated: true,
-      errorMessage: "workout id is missing",
+    id: {
+        in: "params",
+        isMongoId: {
+            errorMessage: "workout id is invalid",
+        },
     },
-    isMongoId: {
-      errorMessage: "workout id is invalid",
-    },
-  },
 }
 
 export const workoutSchema: Schema = {
-  title: {
-    in: ["body"],
-    isEmpty: {
-      negated: true,
-      errorMessage: "title is missing",
+    title: {
+        in: ["body"],
+        isString: {
+            errorMessage: "title must be a string",
+        },
+        trim: true,
     },
-    isString: {
-      errorMessage: "title must be a string",
-    },
-    trim: true,
-  },
 
-  load: {
-    in: ["body"],
-    isEmpty: {
-      negated: true,
-      errorMessage: "load is missing",
+    load: {
+        in: ["body"],
+        isFloat: {
+            errorMessage: "load must be a number",
+        },
+        toFloat: true,
     },
-    isFloat: {
-      errorMessage: "load must be a number",
-    },
-    toFloat: true,
-  },
 
-  reps: {
-    in: ["body"],
-    isEmpty: {
-      negated: true,
-      errorMessage: "reps is missing",
+    reps: {
+        in: ["body"],
+        isFloat: {
+            errorMessage: "reps must be a number",
+        },
+        toFloat: true,
     },
-    isFloat: {
-      errorMessage: "reps must be a number",
-    },
-    toFloat: true,
-  },
 }
